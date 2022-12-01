@@ -21,7 +21,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 flex_direction: FlexDirection::Column,
-                align_items: AlignItems:: Center,
+                align_items: AlignItems::Center,
                 ..default()
             },
             ..default()
@@ -89,22 +89,25 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                     )
                                     .with_style(Style {
                                         position_type: PositionType::Absolute,
-                                        position: UiRect { left: Val::Px(0.0), right: Val::Auto, top: Val::Px(0.0), bottom: Val::Auto },
+                                        position: UiRect {
+                                            left: Val::Px(0.0),
+                                            right: Val::Auto,
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Auto,
+                                        },
                                         margin: UiRect::all(Val::Px(5.0)),
                                         ..default()
                                     }),
                                 );
-                                parent.spawn(
-                                    ImageBundle {
-                                        style: Style {
-                                            size: Size::new(Val::Px(75.0), Val::Px(75.0)),
-                                            max_size: Size::new(Val::Percent(75.0), Val::Auto),
-                                            ..default()
-                                        },
-                                        image: asset_server.load("img/snowflake.png").into(),
+                                parent.spawn(ImageBundle {
+                                    style: Style {
+                                        size: Size::new(Val::Px(75.0), Val::Px(75.0)),
+                                        max_size: Size::new(Val::Percent(75.0), Val::Auto),
                                         ..default()
-                                    }
-                                );
+                                    },
+                                    image: asset_server.load("img/snowflake.png").into(),
+                                    ..default()
+                                });
                             });
                     }
                 });

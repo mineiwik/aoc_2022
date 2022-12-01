@@ -5,30 +5,58 @@ pub struct DayPlugin;
 
 impl Plugin for DayPlugin {
     fn build(&self, _app: &mut App) {
-        solve();
+        let stream: String = fs::read_to_string("assets/inputs/day01.txt").unwrap();
+        println!("{:#?}", solve(&stream));
     }
 }
 
-pub fn solve() {
-    let stream: String = fs::read_to_string("assets/inputs/day01.txt").unwrap();
-    let elves: Vec<&str> = stream.split("\n\n").collect();
-
-    let mut cals: Vec<usize> = Vec::new();
-
+pub fn solve(input: &str) -> (usize, usize) {
+    let elves: Vec<&str> = input.split("\n\n").collect();
+    let mut calories: Vec<usize> = Vec::new();
     for elve in elves {
         let sum: usize = elve.split("\n").map(|i| i.parse::<usize>().unwrap()).sum();
-        cals.push(sum);
+        calories.push(sum);
     }
 
-    println!("{}", cals.iter().max().unwrap());
+    let part1 = part1(&calories);
+    let part2 = part2(&mut calories);
 
-    cals.sort_by(|a, b| b.cmp(a));
+    (part1, part2)
+}
 
-    let sum = cals.get(0).unwrap() + cals.get(1).unwrap() + cals.get(2).unwrap();
-    println!("{:?}", sum);
+fn part1(calories: &Vec<usize>) -> usize {
+    *calories.iter().max().unwrap()
+}
+
+fn part2(calories: &mut Vec<usize>) -> usize {
+    calories.sort_by(|a, b| b.cmp(a));
+    calories[0..=2].iter().sum()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn sample() {
+        let input = "\
+1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000";
+        let (part1, part2) = solve(input);
+
+        assert_eq!(part1, 24000);
+        assert_eq!(part2, 45000);
+    }
 }
