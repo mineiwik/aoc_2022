@@ -6,29 +6,33 @@ pub struct DayPlugin;
 impl Plugin for DayPlugin {
     fn build(&self, _app: &mut App) {
         let stream: String = fs::read_to_string("assets/inputs/day01.txt").unwrap();
-        println!("{:#?}", solve(&stream));
+        println!("Day 1: {:?}", solve(&stream));
     }
 }
 
 pub fn solve(input: &str) -> (usize, usize) {
-    let elves: Vec<&str> = input.split("\n\n").collect();
-    let mut calories: Vec<usize> = Vec::new();
-    for elve in elves {
-        let sum: usize = elve.split("\n").map(|i| i.parse::<usize>().unwrap()).sum();
-        calories.push(sum);
-    }
-
-    let part1 = part1(&calories);
-    let part2 = part2(&mut calories);
+    let part1 = part1(parse_input(input));
+    let part2 = part2(parse_input(input));
 
     (part1, part2)
 }
 
-fn part1(calories: &Vec<usize>) -> usize {
+fn parse_input(input: &str) -> Vec<usize> {
+    let input = input.lines().collect::<Vec<&str>>().join("|");
+    let elves: Vec<&str> = input.split("||").collect();
+    let mut calories: Vec<usize> = Vec::new();
+    for elve in elves {
+        let sum: usize = elve.split("|").map(|i| i.parse::<usize>().unwrap()).sum();
+        calories.push(sum);
+    }
+    calories
+}
+
+fn part1(calories: Vec<usize>) -> usize {
     *calories.iter().max().unwrap()
 }
 
-fn part2(calories: &mut Vec<usize>) -> usize {
+fn part2(mut calories: Vec<usize>) -> usize {
     calories.sort_by(|a, b| b.cmp(a));
     calories[0..=2].iter().sum()
 }

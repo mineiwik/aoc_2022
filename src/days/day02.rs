@@ -1,105 +1,77 @@
-use bevy::{prelude::*, utils::HashMap};
+use bevy::prelude::*;
 use std::fs;
 
 pub struct DayPlugin;
 
+const POINTS_WON: usize = 6;
+const POINTS_DRAW: usize = 3;
+const POINTS_LOST: usize = 0;
+
 impl Plugin for DayPlugin {
     fn build(&self, _app: &mut App) {
         let stream: String = fs::read_to_string("assets/inputs/day02.txt").unwrap();
-        println!("{:#?}", solve(&stream));
+        println!("Day 2: {:?}", solve(&stream));
     }
-}
-
-#[derive(PartialEq, Eq, Clone)]
-enum Sign {
-    ROCK,
-    PAPER,
-    SCISSORS,
 }
 
 pub fn solve(input: &str) -> (usize, usize) {
-    let rounds: Vec<&str> = input.split("\n").collect();
-    let mut strategies: Vec<(Sign, Sign)> = Vec::new();
-
-    for round in rounds {
-        let mut signs = round.split(" ");
-        let opponent = signs.next().unwrap();
-        let player = signs.next().unwrap();
-        let opponent = match opponent {
-            "A" => Sign::ROCK,
-            "B" => Sign::PAPER,
-            "C" => Sign::SCISSORS,
-            _ => unimplemented!(),
-        };
-        let player = match player {
-            "X" => Sign::ROCK,
-            "Y" => Sign::PAPER,
-            "Z" => Sign::SCISSORS,
-            _ => unimplemented!(),
-        };
-        strategies.push((player, opponent));
-    }
-
-    let part1 = part1(&strategies);
-    let part2 = part2(&strategies);
+    let part1 = part1(parse_input(input));
+    let part2 = part2(parse_input(input));
 
     (part1, part2)
 }
 
-fn part1(strategies: &Vec<(Sign, Sign)>) -> usize {
-    let mut results = vec![];
-    for strategy in strategies {
-        let res = get_points(&strategy.0, &strategy.1);
-        results.push(res);
+fn parse_input(input: &str) -> Vec<(usize, usize)> {
+    let rounds: Vec<&str> = input.lines().collect();
+    let mut strategies: Vec<(usize, usize)> = Vec::new();
+
+    for round in rounds {
+        let round = round.replace(" ", "");
+        let mut signs = round.chars();
+        let mut opponent = signs.next().unwrap() as usize;
+        let mut response = signs.next().unwrap() as usize;
+        opponent -= 'A' as usize;
+        response -= 'X' as usize;
+        strategies.push((opponent, response));
     }
-    results.iter().sum()
+    strategies
 }
 
-fn part2(strategies: &Vec<(Sign, Sign)>) -> usize {
-    let mut results = vec![];
-    for strategy in strategies {
-        let player = get_player_sign(&strategy.1, &strategy.0);
-        let res = get_points(&player, &strategy.1);
-        results.push(res);
-    }
-    results.iter().sum()
-}
-
-fn get_points(player: &Sign, opponent: &Sign) -> usize {
+fn part1(strategies: Vec<(usize, usize)>) -> usize {
     let mut sum = 0;
-    sum += get_outcome_points(&player, &opponent);
-    sum += match player {
-        Sign::ROCK => 1,
-        Sign::PAPER => 2,
-        Sign::SCISSORS => 3,
-    };
+    for (opponent, player) in strategies {
+        sum += get_points(player, opponent);
+    }
     sum
 }
 
-fn get_player_sign(opponent: &Sign, outcome: &Sign) -> Sign {
-    match (opponent, outcome) {
-        (Sign::ROCK, Sign::ROCK) => Sign::SCISSORS,
-        (Sign::ROCK, Sign::SCISSORS) => Sign::PAPER,
-        (Sign::PAPER, Sign::ROCK) => Sign::ROCK,
-        (Sign::PAPER, Sign::SCISSORS) => Sign::SCISSORS,
-        (Sign::SCISSORS, Sign::ROCK) => Sign::PAPER,
-        (Sign::SCISSORS, Sign::SCISSORS) => Sign::ROCK,
-        _ => opponent.clone(),
+fn part2(strategies: Vec<(usize, usize)>) -> usize {
+    let mut sum = 0;
+    for (opponent, outcome) in strategies {
+        let player = get_player_sign(opponent, outcome);
+        sum += get_points(player, opponent);
     }
+    sum
 }
 
-fn get_outcome_points(player: &Sign, opponent: &Sign) -> usize {
-    if *player == *opponent {
-        return 3;
+fn get_points(player: usize, opponent: usize) -> usize {
+    let mut sum = get_outcome_points(player, opponent);
+    sum += player + 1;
+    sum
+}
+
+fn get_player_sign(opponent: usize, outcome: usize) -> usize {
+    (opponent + outcome + 2) % 3
+}
+
+fn get_outcome_points(player: usize, opponent: usize) -> usize {
+    if player == opponent {
+        return POINTS_DRAW;
     }
-    match (player, opponent) {
-        (Sign::ROCK, Sign::SCISSORS)
-        | (Sign::SCISSORS, Sign::PAPER)
-        | (Sign::PAPER, Sign::ROCK) => {
-            return 6;
-        }
-        _ => return 0,
+    if player == (opponent + 1) % 3 {
+        return POINTS_WON;
     }
+    return POINTS_LOST;
 }
 
 #[cfg(test)]
