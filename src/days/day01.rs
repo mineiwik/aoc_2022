@@ -1,15 +1,3 @@
-use bevy::prelude::*;
-use std::fs;
-
-pub struct DayPlugin;
-
-impl Plugin for DayPlugin {
-    fn build(&self, _app: &mut App) {
-        let stream: String = fs::read_to_string("assets/inputs/day01.txt").unwrap();
-        println!("Day 1: {:?}", solve(&stream));
-    }
-}
-
 pub fn solve(input: &str) -> (usize, usize) {
     let part1 = part1(parse_input(input));
     let part2 = part2(parse_input(input));

@@ -1,15 +1,4 @@
-use bevy::{prelude::*, utils::HashSet};
-use std::fs;
-
-pub struct DayPlugin;
-
-
-impl Plugin for DayPlugin {
-    fn build(&self, _app: &mut App) {
-        let stream: String = fs::read_to_string("assets/inputs/day03.txt").unwrap();
-        println!("Day 3: {:?}", solve(&stream));
-    }
-}
+use std::collections::HashSet;
 
 pub fn solve(input: &str) -> (usize, usize) {
     let part1 = part1(parse_input(input));
@@ -28,7 +17,9 @@ fn part1(rucksacks: Vec<&str>) -> usize {
         let (first_compartment, second_compartment) = rucksack.split_at(rucksack.len() >> 1);
         let first_compartment: HashSet<char> = first_compartment.chars().collect();
         let second_compartment: HashSet<char> = second_compartment.chars().collect();
-        let intersection: Vec<&char> = first_compartment.intersection(&second_compartment).collect();
+        let intersection: Vec<&char> = first_compartment
+            .intersection(&second_compartment)
+            .collect();
         sum += get_priority(intersection);
     }
     sum
@@ -36,14 +27,15 @@ fn part1(rucksacks: Vec<&str>) -> usize {
 
 fn part2(rucksacks: Vec<&str>) -> usize {
     let mut sum: usize = 0;
-    for i in 0..rucksacks.len()/3 {
-        let groups: Vec<HashSet<char>> = rucksacks[i*3..=i*3 + 2].iter().map(|group| group.chars().collect()).collect();
-        let intersection: HashSet<char> = groups
-        .iter()
-        .skip(1)
-        .fold(groups[0].clone(), |acc, hs| {
-            acc.intersection(hs).cloned().collect()
-        });
+    for i in 0..rucksacks.len() / 3 {
+        let groups: Vec<HashSet<char>> = rucksacks[i * 3..=i * 3 + 2]
+            .iter()
+            .map(|group| group.chars().collect())
+            .collect();
+        let intersection: HashSet<char> =
+            groups.iter().skip(1).fold(groups[0].clone(), |acc, hs| {
+                acc.intersection(hs).cloned().collect()
+            });
         let intersection = intersection.iter().collect();
         sum += get_priority(intersection);
     }

@@ -1,18 +1,6 @@
-use bevy::prelude::*;
-use std::fs;
-
-pub struct DayPlugin;
-
 const POINTS_WON: usize = 6;
 const POINTS_DRAW: usize = 3;
 const POINTS_LOST: usize = 0;
-
-impl Plugin for DayPlugin {
-    fn build(&self, _app: &mut App) {
-        let stream: String = fs::read_to_string("assets/inputs/day02.txt").unwrap();
-        println!("Day 2: {:?}", solve(&stream));
-    }
-}
 
 pub fn solve(input: &str) -> (usize, usize) {
     let part1 = part1(parse_input(input));
