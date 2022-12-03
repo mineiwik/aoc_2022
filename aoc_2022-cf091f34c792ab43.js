@@ -1797,7 +1797,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('aoc_2022_bg.wasm', import.meta.url);
+        input = new URL('aoc_2022-cf091f34c792ab43_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
