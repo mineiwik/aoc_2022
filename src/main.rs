@@ -24,6 +24,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 align_items: AlignItems::Center,
                 ..default()
             },
+            background_color: Color::rgb(0.075, 0.075, 0.075).into(),
             ..default()
         })
         .with_children(|parent| {
@@ -69,7 +70,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                         parent
                             .spawn(NodeBundle {
                                 style: Style {
-                                    size: Size::new(Val::Percent(15.0), Val::Px(100.0)),
+                                    size: Size::new(Val::Percent(15.0), Val::Percent(18.0)),
                                     align_items: AlignItems::Center,
                                     justify_content: JustifyContent::Center,
                                     ..default()
@@ -78,6 +79,14 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                 ..default()
                             })
                             .with_children(|parent| {
+                                parent.spawn(ImageBundle {
+                                    style: Style {
+                                        size: Size::new(Val::Percent(50.0), Val::Auto),
+                                        ..default()
+                                    },
+                                    image: asset_server.load("img/snowflake.png").into(),
+                                    ..default()
+                                });
                                 parent.spawn(
                                     TextBundle::from_section(
                                         format!("{}", i + 1),
@@ -99,15 +108,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                         ..default()
                                     }),
                                 );
-                                parent.spawn(ImageBundle {
-                                    style: Style {
-                                        size: Size::new(Val::Px(75.0), Val::Px(75.0)),
-                                        max_size: Size::new(Val::Percent(75.0), Val::Auto),
-                                        ..default()
-                                    },
-                                    image: asset_server.load("img/snowflake.png").into(),
-                                    ..default()
-                                });
                             });
                     }
                 });
