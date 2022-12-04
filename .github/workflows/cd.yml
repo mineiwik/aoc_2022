@@ -10,7 +10,6 @@ on: [push, pull_request]
 
 jobs:
   release-wasm:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
