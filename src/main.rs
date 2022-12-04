@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_egui::EguiPlugin;
 
 mod days;
 mod menu;
@@ -19,6 +20,7 @@ struct DaySelectState(usize);
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(EguiPlugin)
         .add_startup_system(setup)
         .add_state(GameState::Menu)
         .add_state(DaySelectState(0))

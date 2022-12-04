@@ -46,8 +46,6 @@ fn part2(pairs: Vec<(HashSet<usize>, HashSet<usize>)>) -> usize {
     sum
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
