@@ -1,12 +1,10 @@
 name: cd
 
-#on:
-#  workflow_run:
-#    workflows: ["ci"]
-#    types:
-#      - completed
-
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["ci"]
+    types:
+      - completed
 
 jobs:
   release-wasm:
@@ -14,7 +12,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
-      
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -26,7 +24,7 @@ jobs:
             ~/.cargo/git
             target
           key: build-wasm-${{ hashFiles('**/Cargo.lock') }}
-      
+
       - name: Setup WASM toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -41,7 +39,7 @@ jobs:
       - name: Build web-release
         run: |
           trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
-      
+
       - name: Deploy web-release
         uses: peaceiris/actions-gh-pages@v3
         with:
