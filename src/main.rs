@@ -19,7 +19,15 @@ struct DaySelectState(usize);
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            window: WindowDescriptor {
+                width: 960.,
+                height: 720.,
+                canvas: Some("#bevy".to_owned()),
+                ..default()
+            },
+            ..default()
+        }))
         .add_plugin(EguiPlugin)
         .add_startup_system(setup)
         .add_state(GameState::Menu)
