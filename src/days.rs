@@ -1,6 +1,10 @@
 use crate::{despawn_screen, DaySelectState, GameState, HOVER_BUTTON, PRESSED_BUTTON};
 use bevy::prelude::*;
 use bevy_egui::EguiClipboard;
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::{prelude::*, JsCast};
+#[cfg(target_arch = "wasm32")]
+use web_sys::HtmlTextAreaElement;
 
 mod day01;
 mod day02;
@@ -104,24 +108,27 @@ fn day_input_setup(
                 })
                 .with_children(|parent| {
                     parent
-                        .spawn((ButtonBundle {
-                            style: Style {
-                                align_items: AlignItems::Center,
-                                justify_content: JustifyContent::Center,
-                                size: Size {
-                                    height: Val::Percent(75.0),
-                                    width: Val::Auto,
-                                },
-                                aspect_ratio: Some(1.0),
-                                margin: UiRect {
-                                    right: Val::Percent(2.0),
+                        .spawn((
+                            ButtonBundle {
+                                style: Style {
+                                    align_items: AlignItems::Center,
+                                    justify_content: JustifyContent::Center,
+                                    size: Size {
+                                        height: Val::Percent(75.0),
+                                        width: Val::Auto,
+                                    },
+                                    aspect_ratio: Some(1.0),
+                                    margin: UiRect {
+                                        right: Val::Percent(2.0),
+                                        ..default()
+                                    },
                                     ..default()
                                 },
+                                background_color: BUTTON_BACKGROUND.into(),
                                 ..default()
                             },
-                            background_color: BUTTON_BACKGROUND.into(),
-                            ..default()
-                        }, ButtonAction::Exit))
+                            ButtonAction::Exit,
+                        ))
                         .with_children(|parent| {
                             parent.spawn(TextBundle::from_section(
                                 "X",
@@ -157,21 +164,24 @@ fn day_input_setup(
                 })
                 .with_children(|parent| {
                     parent
-                        .spawn((ButtonBundle {
-                            style: Style {
-                                margin: UiRect::all(Val::Auto),
-                                flex_direction: FlexDirection::Column,
-                                align_items: AlignItems::Center,
-                                justify_content: JustifyContent::Center,
-                                size: Size {
-                                    width: Val::Percent(50.0),
-                                    height: Val::Percent(50.0),
+                        .spawn((
+                            ButtonBundle {
+                                style: Style {
+                                    margin: UiRect::all(Val::Auto),
+                                    flex_direction: FlexDirection::Column,
+                                    align_items: AlignItems::Center,
+                                    justify_content: JustifyContent::Center,
+                                    size: Size {
+                                        width: Val::Percent(50.0),
+                                        height: Val::Percent(50.0),
+                                    },
+                                    ..default()
                                 },
+                                background_color: LABEL_BACKGROUND.into(),
                                 ..default()
                             },
-                            background_color: LABEL_BACKGROUND.into(),
-                            ..default()
-                        }, ButtonAction::Paste))
+                            ButtonAction::Paste,
+                        ))
                         .with_children(|parent| {
                             parent.spawn(
                                 TextBundle::from_section(
@@ -245,24 +255,27 @@ fn day_show_setup(
                 })
                 .with_children(|parent| {
                     parent
-                        .spawn((ButtonBundle {
-                            style: Style {
-                                align_items: AlignItems::Center,
-                                justify_content: JustifyContent::Center,
-                                size: Size {
-                                    height: Val::Percent(75.0),
-                                    width: Val::Auto,
-                                },
-                                aspect_ratio: Some(1.0),
-                                margin: UiRect {
-                                    right: Val::Percent(2.0),
+                        .spawn((
+                            ButtonBundle {
+                                style: Style {
+                                    align_items: AlignItems::Center,
+                                    justify_content: JustifyContent::Center,
+                                    size: Size {
+                                        height: Val::Percent(75.0),
+                                        width: Val::Auto,
+                                    },
+                                    aspect_ratio: Some(1.0),
+                                    margin: UiRect {
+                                        right: Val::Percent(2.0),
+                                        ..default()
+                                    },
                                     ..default()
                                 },
+                                background_color: BUTTON_BACKGROUND.into(),
                                 ..default()
                             },
-                            background_color: BUTTON_BACKGROUND.into(),
-                            ..default()
-                        }, ButtonAction::Exit))
+                            ButtonAction::Exit,
+                        ))
                         .with_children(|parent| {
                             parent.spawn(TextBundle::from_section(
                                 "X",
@@ -298,20 +311,23 @@ fn day_show_setup(
                 })
                 .with_children(|parent| {
                     parent
-                        .spawn((ButtonBundle {
-                            style: Style {
-                                margin: UiRect::all(Val::Auto),
-                                flex_direction: FlexDirection::Column,
-                                align_items: AlignItems::Center,
-                                size: Size {
-                                    width: Val::Percent(95.0),
-                                    height: Val::Auto,
+                        .spawn((
+                            ButtonBundle {
+                                style: Style {
+                                    margin: UiRect::all(Val::Auto),
+                                    flex_direction: FlexDirection::Column,
+                                    align_items: AlignItems::Center,
+                                    size: Size {
+                                        width: Val::Percent(95.0),
+                                        height: Val::Auto,
+                                    },
+                                    ..default()
                                 },
+                                background_color: LABEL_BACKGROUND.into(),
                                 ..default()
                             },
-                            background_color: LABEL_BACKGROUND.into(),
-                            ..default()
-                        }, ButtonAction::CopyPart1))
+                            ButtonAction::CopyPart1,
+                        ))
                         .with_children(|parent| {
                             parent.spawn(
                                 TextBundle::from_section(
@@ -343,20 +359,23 @@ fn day_show_setup(
                             );
                         });
                     parent
-                        .spawn((ButtonBundle {
-                            style: Style {
-                                margin: UiRect::all(Val::Auto),
-                                flex_direction: FlexDirection::Column,
-                                align_items: AlignItems::Center,
-                                size: Size {
-                                    width: Val::Percent(95.0),
-                                    height: Val::Auto,
+                        .spawn((
+                            ButtonBundle {
+                                style: Style {
+                                    margin: UiRect::all(Val::Auto),
+                                    flex_direction: FlexDirection::Column,
+                                    align_items: AlignItems::Center,
+                                    size: Size {
+                                        width: Val::Percent(95.0),
+                                        height: Val::Auto,
+                                    },
+                                    ..default()
                                 },
+                                background_color: LABEL_BACKGROUND.into(),
                                 ..default()
                             },
-                            background_color: LABEL_BACKGROUND.into(),
-                            ..default()
-                        }, ButtonAction::CopyPart2))
+                            ButtonAction::CopyPart2,
+                        ))
                         .with_children(|parent| {
                             parent.spawn(
                                 TextBundle::from_section(
@@ -402,7 +421,7 @@ fn exit_system(
     mut input_state: ResMut<State<InputState>>,
     mut part1_state: ResMut<State<Part1State>>,
     mut part2_state: ResMut<State<Part2State>>,
-    mut egui_clipboard: ResMut<EguiClipboard>
+    mut egui_clipboard: ResMut<EguiClipboard>,
 ) {
     for (interaction, mut color, button_action) in &mut interaction_query {
         if *interaction == Interaction::Clicked {
@@ -416,14 +435,50 @@ fn exit_system(
                     part2_state.set(Part2State("".to_string())).unwrap();
                 }
                 ButtonAction::Paste => {
+                    #[cfg(target_arch = "wasm32")]
+                    let input = {
+                        {
+                            let window = web_sys::window().expect("no global `window` exists");
+                            let document =
+                                window.document().expect("should have a document on window");
+
+                            // Manufacture the element we're gonna append
+                            let val = document.get_element_by_id("aoc2022-input").expect("msg");
+                            let val = val.dyn_into::<HtmlTextAreaElement>().expect("msg");
+                            val.value()
+                        }
+                    };
+                    #[cfg(not(target_arch = "wasm32"))]
                     let input = egui_clipboard.get_contents().unwrap();
                     input_state.set(InputState(input)).unwrap();
                     day_state.set(DayState::Show).unwrap();
                 }
                 ButtonAction::CopyPart1 => {
+                    #[cfg(target_arch = "wasm32")]
+                    {
+                        let window = web_sys::window().expect("no global `window` exists");
+                        let document = window.document().expect("should have a document on window");
+
+                        // Manufacture the element we're gonna append
+                        let val = document.get_element_by_id("aoc2022-input").expect("msg");
+                        let val = val.dyn_into::<HtmlTextAreaElement>().expect("msg");
+                        val.set_value(&part1_state.current().0);
+                    }
+                    #[cfg(not(target_arch = "wasm32"))]
                     egui_clipboard.set_contents(&part1_state.current().0);
                 }
                 ButtonAction::CopyPart2 => {
+                    #[cfg(target_arch = "wasm32")]
+                    {
+                        let window = web_sys::window().expect("no global `window` exists");
+                        let document = window.document().expect("should have a document on window");
+
+                        // Manufacture the element we're gonna append
+                        let val = document.get_element_by_id("aoc2022-input").expect("msg");
+                        let val = val.dyn_into::<HtmlTextAreaElement>().expect("msg");
+                        val.set_value(&part2_state.current().0);
+                    }
+                    #[cfg(not(target_arch = "wasm32"))]
                     egui_clipboard.set_contents(&part2_state.current().0);
                 }
             }
