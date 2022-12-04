@@ -6,8 +6,7 @@ name: cd
 #    types:
 #      - completed
 
-on:
-  push:
+on: [push, pull_request]
 
 jobs:
   release-wasm:
