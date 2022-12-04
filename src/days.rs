@@ -5,8 +5,9 @@ use std::fs;
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
-pub const MAX_DAY: usize = 3;
+pub const MAX_DAY: usize = 4;
 const BUTTON_BACKGROUND: Color = Color::rgb(0.2235, 0.2196, 0.2);
 const LABEL_BACKGROUND: Color = Color::rgb(0.0549, 0.1765, 0.2549);
 pub struct DaysPlugin;
@@ -43,6 +44,10 @@ fn days_setup(
         3 => {
             let input: String = fs::read_to_string("assets/inputs/day03.txt").unwrap();
             day03::solve(&input)
+        }
+        4 => {
+            let input: String = fs::read_to_string("assets/inputs/day04.txt").unwrap();
+            day04::solve(&input)
         }
         _ => unimplemented!(),
     };
