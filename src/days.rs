@@ -10,8 +10,9 @@ mod day01;
 mod day02;
 mod day03;
 mod day04;
+mod day05;
 
-pub const MAX_DAY: usize = 4;
+pub const MAX_DAY: usize = 5;
 const BUTTON_BACKGROUND: Color = Color::rgb(0.2235, 0.2196, 0.2);
 const LABEL_BACKGROUND: Color = Color::rgb(0.0549, 0.1765, 0.2549);
 pub struct DaysPlugin;
@@ -218,11 +219,12 @@ fn day_show_setup(
         2 => day02::solve(input),
         3 => day03::solve(input),
         4 => day04::solve(input),
+        5 => day05::solve(input),
         _ => unimplemented!(),
     };
 
-    part1_state.set(Part1State(part1.to_string())).unwrap();
-    part2_state.set(Part2State(part2.to_string())).unwrap();
+    part1_state.set(Part1State(part1.clone())).unwrap();
+    part2_state.set(Part2State(part2.clone())).unwrap();
 
     commands
         .spawn((

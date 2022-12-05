@@ -2,11 +2,11 @@ const POINTS_WON: usize = 6;
 const POINTS_DRAW: usize = 3;
 const POINTS_LOST: usize = 0;
 
-pub fn solve(input: &str) -> (usize, usize) {
+pub fn solve(input: &str) -> (String, String) {
     let part1 = part1(parse_input(input));
     let part2 = part2(parse_input(input));
 
-    (part1, part2)
+    (part1.to_string(), part2.to_string())
 }
 
 fn parse_input(input: &str) -> Vec<(usize, usize)> {
@@ -65,16 +65,18 @@ fn get_outcome_points(player: usize, opponent: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
 
     #[test]
     fn sample() {
-        let input = "\
-A Y
-B X
-C Z";
+        let input = indoc! {"
+        A Y
+        B X
+        C Z
+        "};
         let (part1, part2) = solve(input);
 
-        assert_eq!(part1, 15);
-        assert_eq!(part2, 12);
+        assert_eq!(&part1, "15");
+        assert_eq!(&part2, "12");
     }
 }

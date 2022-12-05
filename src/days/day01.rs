@@ -1,8 +1,8 @@
-pub fn solve(input: &str) -> (usize, usize) {
+pub fn solve(input: &str) -> (String, String) {
     let part1 = part1(parse_input(input));
     let part2 = part2(parse_input(input));
 
-    (part1, part2)
+    (part1.to_string(), part2.to_string())
 }
 
 fn parse_input(input: &str) -> Vec<usize> {
@@ -28,27 +28,29 @@ fn part2(mut calories: Vec<usize>) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
 
     #[test]
     fn sample() {
-        let input = "\
-1000
-2000
-3000
+        let input = indoc! {"
+        1000
+        2000
+        3000
 
-4000
+        4000
 
-5000
-6000
+        5000
+        6000
 
-7000
-8000
-9000
+        7000
+        8000
+        9000
 
-10000";
+        10000
+        "};
         let (part1, part2) = solve(input);
 
-        assert_eq!(part1, 24000);
-        assert_eq!(part2, 45000);
+        assert_eq!(&part1, "24000");
+        assert_eq!(&part2, "45000");
     }
 }

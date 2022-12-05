@@ -1,10 +1,10 @@
 use std::collections::HashSet;
 
-pub fn solve(input: &str) -> (usize, usize) {
+pub fn solve(input: &str) -> (String, String) {
     let part1 = part1(parse_input(input));
     let part2 = part2(parse_input(input));
 
-    (part1, part2)
+    (part1.to_string(), part2.to_string())
 }
 
 fn parse_input(input: &str) -> Vec<&str> {
@@ -54,19 +54,21 @@ fn get_priority(intersection: Vec<&char>) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
 
     #[test]
     fn sample() {
-        let input = "\
-vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw";
+        let input = indoc! {"
+        vJrwpWtwJgWrhcsFMMfFFhFp
+        jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+        PmmdzqPrVvPwwTWBwg
+        wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+        ttgJtRGJQctTZtZT
+        CrZsJsPPZsGzwwsLwLmpwMDw
+        "};
         let (part1, part2) = solve(input);
 
-        assert_eq!(part1, 157);
-        assert_eq!(part2, 70);
+        assert_eq!(&part1, "157");
+        assert_eq!(&part2, "70");
     }
 }

@@ -1,10 +1,10 @@
 use std::collections::HashSet;
 
-pub fn solve(input: &str) -> (usize, usize) {
+pub fn solve(input: &str) -> (String, String) {
     let part1 = part1(parse_input(input));
     let part2 = part2(parse_input(input));
 
-    (part1, part2)
+    (part1.to_string(), part2.to_string())
 }
 
 fn parse_input(input: &str) -> Vec<(HashSet<usize>, HashSet<usize>)> {
@@ -49,19 +49,21 @@ fn part2(pairs: Vec<(HashSet<usize>, HashSet<usize>)>) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
 
     #[test]
     fn sample() {
-        let input = "\
-2-4,6-8
-2-3,4-5
-5-7,7-9
-2-8,3-7
-6-6,4-6
-2-6,4-8";
+        let input = indoc! {"
+        2-4,6-8
+        2-3,4-5
+        5-7,7-9
+        2-8,3-7
+        6-6,4-6
+        2-6,4-8
+        "};
         let (part1, part2) = solve(input);
 
-        assert_eq!(part1, 2);
-        assert_eq!(part2, 4);
+        assert_eq!(&part1, "2");
+        assert_eq!(&part2, "4");
     }
 }
