@@ -59,12 +59,12 @@ mod tests {
     #[test]
     fn sample() {
         let input = indoc! {"
-        vJrwpWtwJgWrhcsFMMfFFhFp
-        jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-        PmmdzqPrVvPwwTWBwg
-        wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-        ttgJtRGJQctTZtZT
-        CrZsJsPPZsGzwwsLwLmpwMDw
+            vJrwpWtwJgWrhcsFMMfFFhFp
+            jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+            PmmdzqPrVvPwwTWBwg
+            wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+            ttgJtRGJQctTZtZT
+            CrZsJsPPZsGzwwsLwLmpwMDw
         "};
         let (part1, part2) = solve(input);
 

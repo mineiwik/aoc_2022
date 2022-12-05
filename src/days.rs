@@ -24,6 +24,9 @@ impl Plugin for DaysPlugin {
             .add_state(Part1State("".to_owned()))
             .add_state(Part2State("".to_owned()))
             .add_system_set(SystemSet::on_enter(GameState::Day).with_system(day_setup))
+            .add_system_set(
+                SystemSet::on_exit(GameState::Day).with_system(despawn_screen::<OnDayScreen>),
+            )
             .add_system_set(SystemSet::on_enter(DayState::Input).with_system(day_input_setup))
             .add_system_set(
                 SystemSet::on_exit(DayState::Input).with_system(despawn_screen::<OnDayInputScreen>),
@@ -61,23 +64,23 @@ enum ButtonAction {
 }
 
 #[derive(Component)]
+struct OnDayScreen;
+
+#[derive(Component)]
 struct OnDayInputScreen;
 
 #[derive(Component)]
 struct OnDayShowScreen;
 
-fn day_setup(mut day_state: ResMut<State<DayState>>) {
-    let _ = day_state.set(DayState::Input);
-}
-
-fn day_input_setup(
+fn day_setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     day_select_state: Res<State<DaySelectState>>,
+    mut day_state: ResMut<State<DayState>>,
 ) {
+    day_state.set(DayState::Input).unwrap();
     let font: Handle<Font> = asset_server.load("fonts/FiraSans-Bold.ttf");
     let day = day_select_state.current().0;
-
     commands
         .spawn((
             NodeBundle {
@@ -91,7 +94,7 @@ fn day_input_setup(
                 background_color: Color::rgb(0.075, 0.075, 0.075).into(),
                 ..default()
             },
-            OnDayInputScreen,
+            OnDayScreen,
         ))
         .with_children(|parent| {
             parent
@@ -149,8 +152,21 @@ fn day_input_setup(
                         },
                     ));
                 });
-            parent
-                .spawn(NodeBundle {
+        });
+}
+
+fn day_input_setup(
+    mut commands: Commands,
+    parent: Query<Entity, With<OnDayScreen>>,
+    asset_server: Res<AssetServer>,
+) {
+    let font: Handle<Font> = asset_server.load("fonts/FiraSans-Bold.ttf");
+    let parent = parent.iter().next().unwrap();
+
+    commands.entity(parent).with_children(|parent| {
+        parent
+            .spawn((
+                NodeBundle {
                     style: Style {
                         flex_direction: FlexDirection::Column,
                         size: Size {
@@ -162,49 +178,52 @@ fn day_input_setup(
                         ..default()
                     },
                     ..default()
-                })
-                .with_children(|parent| {
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: Style {
-                                    margin: UiRect::all(Val::Auto),
-                                    flex_direction: FlexDirection::Column,
-                                    align_items: AlignItems::Center,
-                                    justify_content: JustifyContent::Center,
-                                    size: Size {
-                                        width: Val::Percent(50.0),
-                                        height: Val::Percent(50.0),
-                                    },
-                                    ..default()
+                },
+                OnDayInputScreen,
+            ))
+            .with_children(|parent| {
+                parent
+                    .spawn((
+                        ButtonBundle {
+                            style: Style {
+                                margin: UiRect::all(Val::Auto),
+                                flex_direction: FlexDirection::Column,
+                                align_items: AlignItems::Center,
+                                justify_content: JustifyContent::Center,
+                                size: Size {
+                                    width: Val::Percent(50.0),
+                                    height: Val::Percent(50.0),
                                 },
-                                background_color: LABEL_BACKGROUND.into(),
                                 ..default()
                             },
-                            ButtonAction::Paste,
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(
-                                TextBundle::from_section(
-                                    "Paste input",
-                                    TextStyle {
-                                        font: font.clone(),
-                                        font_size: 50.0,
-                                        color: Color::rgb(1.0, 1.0, 1.0).into(),
-                                    },
-                                )
-                                .with_style(Style {
-                                    margin: UiRect::all(Val::Px(50.0)),
-                                    ..default()
-                                }),
-                            );
-                        });
-                });
-        });
+                            background_color: LABEL_BACKGROUND.into(),
+                            ..default()
+                        },
+                        ButtonAction::Paste,
+                    ))
+                    .with_children(|parent| {
+                        parent.spawn(
+                            TextBundle::from_section(
+                                "Paste input",
+                                TextStyle {
+                                    font: font.clone(),
+                                    font_size: 50.0,
+                                    color: Color::rgb(1.0, 1.0, 1.0).into(),
+                                },
+                            )
+                            .with_style(Style {
+                                margin: UiRect::all(Val::Px(50.0)),
+                                ..default()
+                            }),
+                        );
+                    });
+            });
+    });
 }
 
 fn day_show_setup(
     mut commands: Commands,
+    parent: Query<Entity, With<OnDayScreen>>,
     asset_server: Res<AssetServer>,
     day_select_state: Res<State<DaySelectState>>,
     mut part1_state: ResMut<State<Part1State>>,
@@ -214,6 +233,7 @@ fn day_show_setup(
     let font: Handle<Font> = asset_server.load("fonts/FiraSans-Bold.ttf");
     let day = day_select_state.current().0;
     let input = &input_state.current().0;
+    let parent = parent.iter().next().unwrap();
     let (part1, part2) = match day {
         1 => day01::solve(input),
         2 => day02::solve(input),
@@ -223,82 +243,12 @@ fn day_show_setup(
         _ => unimplemented!(),
     };
 
-    part1_state.set(Part1State(part1.clone())).unwrap();
-    part2_state.set(Part2State(part2.clone())).unwrap();
-
-    commands
-        .spawn((
-            NodeBundle {
-                style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                    align_items: AlignItems::Center,
-                    justify_content: JustifyContent::Center,
-                    flex_direction: FlexDirection::Column,
-                    ..default()
-                },
-                background_color: Color::rgb(0.075, 0.075, 0.075).into(),
-                ..default()
-            },
-            OnDayShowScreen,
-        ))
-        .with_children(|parent| {
-            parent
-                .spawn(NodeBundle {
-                    style: Style {
-                        align_items: AlignItems::Center,
-                        justify_content: JustifyContent::Center,
-                        size: Size {
-                            width: Val::Percent(100.0),
-                            height: Val::Percent(10.0),
-                        },
-                        ..default()
-                    },
-                    ..default()
-                })
-                .with_children(|parent| {
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: Style {
-                                    align_items: AlignItems::Center,
-                                    justify_content: JustifyContent::Center,
-                                    size: Size {
-                                        height: Val::Percent(75.0),
-                                        width: Val::Auto,
-                                    },
-                                    aspect_ratio: Some(1.0),
-                                    margin: UiRect {
-                                        right: Val::Percent(2.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                },
-                                background_color: BUTTON_BACKGROUND.into(),
-                                ..default()
-                            },
-                            ButtonAction::Exit,
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(TextBundle::from_section(
-                                "X",
-                                TextStyle {
-                                    font: font.clone(),
-                                    font_size: 50.0,
-                                    color: Color::rgb(1.0, 1.0, 1.0).into(),
-                                },
-                            ));
-                        });
-                    parent.spawn(TextBundle::from_section(
-                        format!("Day {}", day),
-                        TextStyle {
-                            font: font.clone(),
-                            font_size: 50.0,
-                            color: Color::rgb(1.0, 1.0, 1.0).into(),
-                        },
-                    ));
-                });
-            parent
-                .spawn(NodeBundle {
+    part1_state.set(Part1State(part1.clone())).ok();
+    part2_state.set(Part2State(part2.clone())).ok();
+    commands.entity(parent).with_children(|parent| {
+        parent
+            .spawn((
+                NodeBundle {
                     style: Style {
                         flex_direction: FlexDirection::Column,
                         size: Size {
@@ -310,105 +260,70 @@ fn day_show_setup(
                         ..default()
                     },
                     ..default()
-                })
-                .with_children(|parent| {
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: Style {
-                                    margin: UiRect::all(Val::Auto),
-                                    flex_direction: FlexDirection::Column,
-                                    align_items: AlignItems::Center,
-                                    size: Size {
-                                        width: Val::Percent(95.0),
-                                        height: Val::Auto,
-                                    },
-                                    ..default()
-                                },
-                                background_color: LABEL_BACKGROUND.into(),
-                                ..default()
-                            },
-                            ButtonAction::CopyPart1,
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(
-                                TextBundle::from_section(
-                                    "Part 1",
-                                    TextStyle {
-                                        font: font.clone(),
-                                        font_size: 50.0,
-                                        color: Color::rgb(1.0, 1.0, 1.0).into(),
-                                    },
-                                )
-                                .with_style(Style {
-                                    margin: UiRect::all(Val::Px(50.0)),
-                                    ..default()
-                                }),
-                            );
-                            parent.spawn(
-                                TextBundle::from_section(
-                                    format!("{}", part1),
-                                    TextStyle {
-                                        font: font.clone(),
-                                        font_size: 50.0,
-                                        color: Color::rgb(1.0, 1.0, 1.0).into(),
-                                    },
-                                )
-                                .with_style(Style {
-                                    margin: UiRect::all(Val::Px(50.0)),
-                                    ..default()
-                                }),
-                            );
-                        });
-                    parent
-                        .spawn((
-                            ButtonBundle {
-                                style: Style {
-                                    margin: UiRect::all(Val::Auto),
-                                    flex_direction: FlexDirection::Column,
-                                    align_items: AlignItems::Center,
-                                    size: Size {
-                                        width: Val::Percent(95.0),
-                                        height: Val::Auto,
-                                    },
-                                    ..default()
-                                },
-                                background_color: LABEL_BACKGROUND.into(),
-                                ..default()
-                            },
-                            ButtonAction::CopyPart2,
-                        ))
-                        .with_children(|parent| {
-                            parent.spawn(
-                                TextBundle::from_section(
-                                    "Part 2",
-                                    TextStyle {
-                                        font: font.clone(),
-                                        font_size: 50.0,
-                                        color: Color::rgb(1.0, 1.0, 1.0).into(),
-                                    },
-                                )
-                                .with_style(Style {
-                                    margin: UiRect::all(Val::Px(50.0)),
-                                    ..default()
-                                }),
-                            );
-                            parent.spawn(
-                                TextBundle::from_section(
-                                    format!("{}", part2),
-                                    TextStyle {
-                                        font: font.clone(),
-                                        font_size: 50.0,
-                                        color: Color::rgb(1.0, 1.0, 1.0).into(),
-                                    },
-                                )
-                                .with_style(Style {
-                                    margin: UiRect::all(Val::Px(50.0)),
-                                    ..default()
-                                }),
-                            );
-                        });
-                });
+                },
+                OnDayShowScreen,
+            ))
+            .with_children(|parent| {
+                build_part_button(parent, &font, 1, &part1, ButtonAction::CopyPart1);
+                build_part_button(parent, &font, 2, &part2, ButtonAction::CopyPart2);
+            });
+    });
+}
+
+fn build_part_button(
+    parent: &mut ChildBuilder,
+    font: &Handle<Font>,
+    part: usize,
+    res: &str,
+    action: ButtonAction,
+) {
+    parent
+        .spawn((
+            ButtonBundle {
+                style: Style {
+                    margin: UiRect::all(Val::Auto),
+                    flex_direction: FlexDirection::Column,
+                    align_items: AlignItems::Center,
+                    size: Size {
+                        width: Val::Percent(95.0),
+                        height: Val::Auto,
+                    },
+                    ..default()
+                },
+                background_color: LABEL_BACKGROUND.into(),
+                ..default()
+            },
+            action,
+        ))
+        .with_children(|parent| {
+            parent.spawn(
+                TextBundle::from_section(
+                    format!("Part {}", part),
+                    TextStyle {
+                        font: font.clone(),
+                        font_size: 50.0,
+                        color: Color::rgb(1.0, 1.0, 1.0).into(),
+                    },
+                )
+                .with_style(Style {
+                    margin: UiRect::all(Val::Px(50.0)),
+                    ..default()
+                }),
+            );
+            parent.spawn(
+                TextBundle::from_section(
+                    format!("{}", res),
+                    TextStyle {
+                        font: font.clone(),
+                        font_size: 50.0,
+                        color: Color::rgb(1.0, 1.0, 1.0).into(),
+                    },
+                )
+                .with_style(Style {
+                    margin: UiRect::all(Val::Px(50.0)),
+                    ..default()
+                }),
+            );
         });
 }
 
@@ -419,11 +334,10 @@ fn exit_system(
     >,
     mut day_state: ResMut<State<DayState>>,
     mut game_state: ResMut<State<GameState>>,
-    mut day_select_state: ResMut<State<DaySelectState>>,
     mut input_state: ResMut<State<InputState>>,
-    mut part1_state: ResMut<State<Part1State>>,
-    mut part2_state: ResMut<State<Part2State>>,
     mut egui_clipboard: ResMut<EguiClipboard>,
+    part1_state: Res<State<Part1State>>,
+    part2_state: Res<State<Part2State>>,
 ) {
     for (interaction, mut color, button_action) in &mut interaction_query {
         if *interaction == Interaction::Clicked {
@@ -431,10 +345,6 @@ fn exit_system(
                 ButtonAction::Exit => {
                     day_state.set(DayState::Disabled).unwrap();
                     game_state.set(GameState::Menu).unwrap();
-                    day_select_state.set(DaySelectState(0)).unwrap();
-                    input_state.set(InputState("".to_string())).unwrap();
-                    part1_state.set(Part1State("".to_string())).unwrap();
-                    part2_state.set(Part2State("".to_string())).unwrap();
                 }
                 ButtonAction::Paste => {
                     #[cfg(target_arch = "wasm32")]
@@ -452,7 +362,7 @@ fn exit_system(
                     };
                     #[cfg(not(target_arch = "wasm32"))]
                     let input = egui_clipboard.get_contents().unwrap();
-                    input_state.set(InputState(input)).unwrap();
+                    input_state.set(InputState(input)).ok();
                     day_state.set(DayState::Show).unwrap();
                 }
                 ButtonAction::CopyPart1 => {

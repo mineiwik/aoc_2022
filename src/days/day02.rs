@@ -70,9 +70,9 @@ mod tests {
     #[test]
     fn sample() {
         let input = indoc! {"
-        A Y
-        B X
-        C Z
+            A Y
+            B X
+            C Z
         "};
         let (part1, part2) = solve(input);
 

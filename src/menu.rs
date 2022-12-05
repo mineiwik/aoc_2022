@@ -147,7 +147,7 @@ fn menu_action(
             match day_action.0 {
                 1..=MAX_DAY => {
                     game_state.set(GameState::Day).unwrap();
-                    day_select_state.set(DaySelectState(day_action.0)).unwrap();
+                    day_select_state.set(DaySelectState(day_action.0)).ok();
                 }
                 _ => {}
             }
