@@ -2,7 +2,7 @@ use crate::{despawn_screen, DaySelectState, GameState, HOVER_BUTTON, PRESSED_BUT
 use bevy::prelude::*;
 use bevy_egui::EguiClipboard;
 #[cfg(target_arch = "wasm32")]
-use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen::JsCast;
 #[cfg(target_arch = "wasm32")]
 use web_sys::HtmlTextAreaElement;
 
@@ -381,11 +381,11 @@ fn exit_system(
 
 #[cfg(target_arch = "wasm32")]
 fn read_clipboard() -> String {
-    let window = web_sys::window().ok();
-    let document = window.document().ok();
+    let window = web_sys::window().unwrap();
+    let document = window.document().unwrap();
 
-    let val = document.get_element_by_id("aoc2022-input").ok();
-    let val = val.dyn_into::<HtmlTextAreaElement>().ok();
+    let val = document.get_element_by_id("aoc2022-input").unwrap();
+    let val = val.dyn_into::<HtmlTextAreaElement>().unwrap();
     val.value()
 }
 
@@ -396,10 +396,10 @@ fn read_clipboard(clipboard: &ResMut<EguiClipboard>) -> String {
 
 #[cfg(target_arch = "wasm32")]
 fn set_clipboard(value: &str) {
-    let window = web_sys::window().ok();
-    let document = window.document().ok();
-    let val = document.get_element_by_id("aoc2022-input").ok();
-    let val = val.dyn_into::<HtmlTextAreaElement>().ok();
+    let window = web_sys::window().unwrap();
+    let document = window.document().unwrap();
+    let val = document.get_element_by_id("aoc2022-input").unwrap();
+    let val = val.dyn_into::<HtmlTextAreaElement>().unwrap();
     val.set_value(value);
 }
 
