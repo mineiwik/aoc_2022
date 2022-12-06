@@ -21,9 +21,8 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             window: WindowDescriptor {
-                width: 960.,
-                height: 720.,
                 canvas: Some("#bevy".to_owned()),
+                fit_canvas_to_parent: true,
                 ..default()
             },
             ..default()
