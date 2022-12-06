@@ -12,26 +12,26 @@ body {
   height: 100vh;
   background: radial-gradient(ellipse at center, #0a0025 0%, #000000 100%);
   overflow: hidden;
-}
-
-.game-container {
-  width: 100%;
-  height: 70%;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.game-container {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  margin: auto;
+}
+
 #bevy {
-  width: 960px;
-  height: 720px;
+  margin-top: 2vh;
   border-radius: 25px;
   filter: drop-shadow(0 0 10px white);
 }
 
 .aoc2022-div {
   width: 100%;
-  height: 30%;
+  height: 20%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,6 +71,7 @@ textarea::-webkit-scrollbar-thumb {
   /* Workaround for Chromium's selective color inversion */
   border-radius: 50%;
   filter: drop-shadow(0 0 10px white);
+  z-index: 1;
 }
 
 .container {
@@ -81,8 +82,8 @@ textarea::-webkit-scrollbar-thumb {
   height: 100vh;
 }</style>
 
-<link rel="preload" href="/aoc_2022/aoc_2022-5ad4235c78135278_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/aoc_2022/aoc_2022-5ad4235c78135278.js"></head>
+<link rel="preload" href="/aoc_2022/aoc_2022-2d3db62a387372cb_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/aoc_2022/aoc_2022-2d3db62a387372cb.js"></head>
 
 <body>
     <div id="snow"></div>
@@ -92,7 +93,7 @@ textarea::-webkit-scrollbar-thumb {
         </canvas>
     </div>
     <div class="aoc2022-div">
-        <textarea id="aoc2022-input" rows="5"></textarea>
+        <textarea id="aoc2022-input" rows="4"></textarea>
     </div>
     <script>let snowflakes_count = 200;
 
@@ -178,4 +179,4 @@ window.onload = function () {
 </script>
 
 
-<script type="module">import init from '/aoc_2022/aoc_2022-5ad4235c78135278.js';init('/aoc_2022/aoc_2022-5ad4235c78135278_bg.wasm');</script></body></html>
+<script type="module">import init from '/aoc_2022/aoc_2022-2d3db62a387372cb.js';init('/aoc_2022/aoc_2022-2d3db62a387372cb_bg.wasm');</script></body></html>
