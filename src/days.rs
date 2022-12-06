@@ -350,50 +350,24 @@ fn exit_system(
                 }
                 ButtonAction::Paste => {
                     #[cfg(target_arch = "wasm32")]
-                    let input = {
-                        {
-                            let window = web_sys::window().expect("no global `window` exists");
-                            let document =
-                                window.document().expect("should have a document on window");
-
-                            // Manufacture the element we're gonna append
-                            let val = document.get_element_by_id("aoc2022-input").expect("msg");
-                            let val = val.dyn_into::<HtmlTextAreaElement>().expect("msg");
-                            val.value()
-                        }
-                    };
+                    let input = read_clipboard();
                     #[cfg(not(target_arch = "wasm32"))]
-                    let input = egui_clipboard.get_contents().unwrap();
+                    let input = read_clipboard(&egui_clipboard);
+
                     input_state.set(InputState(input)).ok();
                     day_state.set(DayState::Show).unwrap();
                 }
                 ButtonAction::CopyPart1 => {
                     #[cfg(target_arch = "wasm32")]
-                    {
-                        let window = web_sys::window().expect("no global `window` exists");
-                        let document = window.document().expect("should have a document on window");
-
-                        // Manufacture the element we're gonna append
-                        let val = document.get_element_by_id("aoc2022-input").expect("msg");
-                        let val = val.dyn_into::<HtmlTextAreaElement>().expect("msg");
-                        val.set_value(&part1_state.current().0);
-                    }
+                    set_clipboard(&part1_state.current().0);
                     #[cfg(not(target_arch = "wasm32"))]
-                    egui_clipboard.set_contents(&part1_state.current().0);
+                    set_clipboard(&part1_state.current().0, &mut egui_clipboard);
                 }
                 ButtonAction::CopyPart2 => {
                     #[cfg(target_arch = "wasm32")]
-                    {
-                        let window = web_sys::window().expect("no global `window` exists");
-                        let document = window.document().expect("should have a document on window");
-
-                        // Manufacture the element we're gonna append
-                        let val = document.get_element_by_id("aoc2022-input").expect("msg");
-                        let val = val.dyn_into::<HtmlTextAreaElement>().expect("msg");
-                        val.set_value(&part2_state.current().0);
-                    }
+                    set_clipboard(&part2_state.current().0);
                     #[cfg(not(target_arch = "wasm32"))]
-                    egui_clipboard.set_contents(&part2_state.current().0);
+                    set_clipboard(&part2_state.current().0, &mut egui_clipboard);
                 }
             }
         }
@@ -403,4 +377,33 @@ fn exit_system(
             Interaction::None => BUTTON_BACKGROUND.into(),
         }
     }
+}
+
+#[cfg(target_arch = "wasm32")]
+fn read_clipboard() -> String {
+    let window = web_sys::window().ok();
+    let document = window.document().ok();
+
+    let val = document.get_element_by_id("aoc2022-input").ok();
+    let val = val.dyn_into::<HtmlTextAreaElement>().ok();
+    val.value()
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn read_clipboard(clipboard: &ResMut<EguiClipboard>) -> String {
+    clipboard.get_contents().unwrap()
+}
+
+#[cfg(target_arch = "wasm32")]
+fn set_clipboard(value: &str) {
+    let window = web_sys::window().ok();
+    let document = window.document().ok();
+    let val = document.get_element_by_id("aoc2022-input").ok();
+    let val = val.dyn_into::<HtmlTextAreaElement>().ok();
+    val.set_value(value);
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn set_clipboard(value: &str, clipboard: &mut ResMut<EguiClipboard>) {
+    clipboard.set_contents(value);
 }
