@@ -134,6 +134,7 @@ fn menu_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         });
 }
 
+#[allow(clippy::type_complexity)]
 fn menu_action(
     mut interaction_query: Query<
         (&Interaction, &mut BackgroundColor, &DayAction),
@@ -144,12 +145,9 @@ fn menu_action(
 ) {
     for (interaction, mut color, day_action) in &mut interaction_query {
         if *interaction == Interaction::Clicked {
-            match day_action.0 {
-                1..=MAX_DAY => {
-                    game_state.set(GameState::Day).unwrap();
-                    day_select_state.set(DaySelectState(day_action.0)).ok();
-                }
-                _ => {}
+            if let 1..=MAX_DAY = day_action.0 {
+                game_state.set(GameState::Day).unwrap();
+                day_select_state.set(DaySelectState(day_action.0)).ok();
             }
         }
         *color = match *interaction {

@@ -11,14 +11,14 @@ fn parse_input(input: &str) -> Vec<(HashSet<usize>, HashSet<usize>)> {
     let mut pairs: Vec<(HashSet<usize>, HashSet<usize>)> = vec![];
 
     for pair in input.lines() {
-        let mut ranges = pair.split(",");
+        let mut ranges = pair.split(',');
         let lhs = ranges.next().unwrap();
         let rhs = ranges.next().unwrap();
 
-        let mut lhs = lhs.split("-").map(|x| x.parse::<usize>().unwrap());
+        let mut lhs = lhs.split('-').map(|x| x.parse::<usize>().unwrap());
         let lhs: HashSet<usize> = (lhs.next().unwrap()..=lhs.next().unwrap()).collect();
 
-        let mut rhs = rhs.split("-").map(|x| x.parse::<usize>().unwrap());
+        let mut rhs = rhs.split('-').map(|x| x.parse::<usize>().unwrap());
         let rhs: HashSet<usize> = (rhs.next().unwrap()..=rhs.next().unwrap()).collect();
 
         pairs.push((lhs, rhs));

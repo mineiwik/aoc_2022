@@ -141,7 +141,7 @@ fn day_setup(
                                 TextStyle {
                                     font: font.clone(),
                                     font_size: 50.0,
-                                    color: Color::rgb(1.0, 1.0, 1.0).into(),
+                                    color: Color::rgb(1.0, 1.0, 1.0),
                                 },
                             ));
                         });
@@ -150,7 +150,7 @@ fn day_setup(
                         TextStyle {
                             font: font.clone(),
                             font_size: 50.0,
-                            color: Color::rgb(1.0, 1.0, 1.0).into(),
+                            color: Color::rgb(1.0, 1.0, 1.0),
                         },
                     ));
                 });
@@ -210,7 +210,7 @@ fn day_input_setup(
                                 TextStyle {
                                     font: font.clone(),
                                     font_size: 50.0,
-                                    color: Color::rgb(1.0, 1.0, 1.0).into(),
+                                    color: Color::rgb(1.0, 1.0, 1.0),
                                 },
                             )
                             .with_style(Style {
@@ -306,7 +306,7 @@ fn build_part_button(
                     TextStyle {
                         font: font.clone(),
                         font_size: 50.0,
-                        color: Color::rgb(1.0, 1.0, 1.0).into(),
+                        color: Color::rgb(1.0, 1.0, 1.0),
                     },
                 )
                 .with_style(Style {
@@ -316,11 +316,11 @@ fn build_part_button(
             );
             parent.spawn(
                 TextBundle::from_section(
-                    format!("{}", res),
+                    res.to_string(),
                     TextStyle {
                         font: font.clone(),
                         font_size: 50.0,
-                        color: Color::rgb(1.0, 1.0, 1.0).into(),
+                        color: Color::rgb(1.0, 1.0, 1.0),
                     },
                 )
                 .with_style(Style {
@@ -331,6 +331,7 @@ fn build_part_button(
         });
 }
 
+#[allow(clippy::type_complexity)]
 fn exit_system(
     mut interaction_query: Query<
         (&Interaction, &mut BackgroundColor, &ButtonAction),

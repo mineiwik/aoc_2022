@@ -10,7 +10,7 @@ fn parse_input(input: &str) -> Vec<usize> {
     let elves: Vec<&str> = input.split("||").collect();
     let mut calories: Vec<usize> = Vec::new();
     for elve in elves {
-        let sum: usize = elve.split("|").map(|i| i.parse::<usize>().unwrap()).sum();
+        let sum: usize = elve.split('|').map(|i| i.parse::<usize>().unwrap()).sum();
         calories.push(sum);
     }
     calories

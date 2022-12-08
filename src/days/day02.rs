@@ -14,7 +14,7 @@ fn parse_input(input: &str) -> Vec<(usize, usize)> {
     let mut strategies: Vec<(usize, usize)> = Vec::new();
 
     for round in rounds {
-        let round = round.replace(" ", "");
+        let round = round.replace(' ', "");
         let mut signs = round.chars();
         let mut opponent = signs.next().unwrap() as usize;
         let mut response = signs.next().unwrap() as usize;
@@ -59,7 +59,7 @@ fn get_outcome_points(player: usize, opponent: usize) -> usize {
     if player == (opponent + 1) % 3 {
         return POINTS_WON;
     }
-    return POINTS_LOST;
+    POINTS_LOST
 }
 
 #[cfg(test)]

@@ -10,14 +10,14 @@ impl Instruction {
         Self { count, from, to }
     }
 
-    fn execute(&self, stacks: &mut Vec<Vec<char>>) {
+    fn execute(&self, stacks: &mut [Vec<char>]) {
         for _ in 0..self.count {
             let el = stacks.get_mut(self.from).unwrap().pop().unwrap();
             stacks.get_mut(self.to).unwrap().push(el);
         }
     }
 
-    fn execute_reverse(&self, stacks: &mut Vec<Vec<char>>) {
+    fn execute_reverse(&self, stacks: &mut [Vec<char>]) {
         let mut group: Vec<char> = vec![];
         for _ in 0..self.count {
             let el = stacks.get_mut(self.from).unwrap().pop().unwrap();
@@ -38,8 +38,8 @@ pub fn solve(input: &str) -> (String, String) {
 fn parse_input(input: &str) -> (Vec<Vec<char>>, Vec<Instruction>) {
     let input = input.lines().collect::<Vec<&str>>().join("|");
     let mut input = input.split("||");
-    let mut arrangement: Vec<&str> = input.next().unwrap().split("|").collect();
-    let instruction_texts: Vec<&str> = input.next().unwrap().split("|").collect();
+    let mut arrangement: Vec<&str> = input.next().unwrap().split('|').collect();
+    let instruction_texts: Vec<&str> = input.next().unwrap().split('|').collect();
 
     let cols: Vec<usize> = arrangement
         .pop()
@@ -71,7 +71,7 @@ fn parse_input(input: &str) -> (Vec<Vec<char>>, Vec<Instruction>) {
             .replace("move ", "")
             .replace("from ", "")
             .replace("to ", "");
-        let mut instruction = instruction.split(" ").map(|x| x.parse::<usize>().unwrap());
+        let mut instruction = instruction.split(' ').map(|x| x.parse::<usize>().unwrap());
         instructions.push(Instruction::new(
             instruction.next().unwrap(),
             instruction.next().unwrap() - 1,
@@ -106,7 +106,7 @@ mod tests {
                 [D]    
             [N] [C]    
             [Z] [M] [P]
-            1   2   3 
+             1   2   3 
             
             move 1 from 2 to 1
             move 3 from 1 to 3

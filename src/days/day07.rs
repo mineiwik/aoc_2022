@@ -12,7 +12,7 @@ pub fn solve(input: &str) -> (String, String) {
 }
 
 fn parse_input(input: &str) -> Vec<Vec<&str>> {
-    input.lines().map(|x| x.split(" ").collect()).collect()
+    input.lines().map(|x| x.split(' ').collect()).collect()
 }
 
 fn leave_directory(dirs: &mut Vec<String>, dir_sums: &mut HashMap<String, usize>) {
@@ -32,17 +32,17 @@ fn get_sizes(output: Vec<Vec<&str>>) -> HashMap<String, usize> {
     let mut dirs = Vec::<String>::new();
     let mut dir_sums = HashMap::<String, usize>::new();
     for line in output {
-        match *line.get(0).unwrap() {
+        match *line.first().unwrap() {
             "$" => match *line.get(1).unwrap() {
                 "cd" => match *line.get(2).unwrap() {
                     ".." => leave_directory(&mut dirs, &mut dir_sums),
-                    dir @ _ => enter_directory(&mut dirs, &mut dir_sums, dir.to_string()),
+                    dir => enter_directory(&mut dirs, &mut dir_sums, dir.to_string()),
                 },
                 "ls" => {}
                 _ => unimplemented!(),
             },
             "dir" => {}
-            file_size @ _ => {
+            file_size => {
                 *dir_sums.get_mut(dirs.join(";").as_str()).unwrap() +=
                     file_size.parse::<usize>().unwrap();
             }
