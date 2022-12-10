@@ -1,3 +1,5 @@
+const CRT_WIDTH: isize = 40;
+
 enum Instruction {
     Addx(isize),
     Noop,
@@ -22,7 +24,8 @@ impl Cpu {
     }
 
     fn render(&self) -> char {
-        if (self.cycle - 1) % 40 >= self.x - 1 && (self.cycle - 1) % 40 <= self.x + 1 {
+        let position = (self.cycle - 1) % CRT_WIDTH;
+        if position >= self.x - 1 && position <= self.x + 1 {
             return '#';
         }
         '.'
@@ -58,7 +61,7 @@ fn part1(instructions: Vec<Instruction>) -> isize {
     let mut sum = 0;
     for instruction in instructions {
         cpu.execute_cycle(&instruction);
-        if (cpu.cycle + 20) % 40 == 0 {
+        if (cpu.cycle + CRT_WIDTH / 2) % CRT_WIDTH == 0 {
             sum += cpu.cycle * cpu.x;
         }
     }
@@ -71,7 +74,7 @@ fn part2(instructions: Vec<Instruction>) -> String {
     for instruction in instructions {
         output.push(cpu.render());
         cpu.execute_cycle(&instruction);
-        if (cpu.cycle - 1) % 40 == 0 {
+        if (cpu.cycle - 1) % CRT_WIDTH == 0 {
             output.push('\n');
         }
     }
