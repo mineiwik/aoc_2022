@@ -15,8 +15,9 @@ mod day06;
 mod day07;
 mod day08;
 mod day09;
+mod day10;
 
-pub const MAX_DAY: usize = 9;
+pub const MAX_DAY: usize = 10;
 const BUTTON_BACKGROUND: Color = Color::rgb(0.2235, 0.2196, 0.2);
 const LABEL_BACKGROUND: Color = Color::rgb(0.0549, 0.1765, 0.2549);
 pub struct DaysPlugin;
@@ -234,7 +235,7 @@ fn day_show_setup(
     mut part2_state: ResMut<State<Part2State>>,
     input_state: Res<State<InputState>>,
 ) {
-    let font: Handle<Font> = asset_server.load("fonts/FiraSans-Bold.ttf");
+    let font: Handle<Font> = asset_server.load("fonts/FiraMono-Medium.ttf");
     let day = day_select_state.current().0;
     let input = &input_state.current().0;
     let parent = parent.iter().next().unwrap();
@@ -248,6 +249,7 @@ fn day_show_setup(
         7 => day07::solve(input),
         8 => day08::solve(input),
         9 => day09::solve(input),
+        10 => day10::solve(input),
         _ => unimplemented!(),
     };
 
