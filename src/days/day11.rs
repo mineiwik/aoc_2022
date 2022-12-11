@@ -8,21 +8,21 @@ enum Operator {
 
 #[derive(Clone, Copy, Debug)]
 enum Operand {
-    Number(usize),
+    Number(u64),
     ItemValue,
 }
 
 #[derive(Clone, Debug)]
 struct Monkey {
-    items: Vec<usize>,
+    items: Vec<u64>,
     operator: Operator,
     operand: Operand,
-    test: usize,
-    result: (usize, usize),
+    test: u64,
+    result: (u64, u64),
 }
 
 impl Operator {
-    fn compute(&self, lhs: usize, rhs: usize, divide: bool) -> usize {
+    fn compute(&self, lhs: u64, rhs: u64, divide: bool) -> u64 {
         let intermediate_res = match self {
             Self::Add => lhs + rhs,
             Self::Mul => lhs * rhs,
@@ -36,11 +36,11 @@ impl Operator {
 
 impl Monkey {
     fn new(
-        items: Vec<usize>,
+        items: Vec<u64>,
         operator: Operator,
         operand: Operand,
-        test: usize,
-        result: (usize, usize),
+        test: u64,
+        result: (u64, u64),
     ) -> Self {
         Self {
             items,
@@ -51,7 +51,7 @@ impl Monkey {
         }
     }
 
-    fn throw_everything(&mut self, divide: bool) -> Vec<(usize, usize)> {
+    fn throw_everything(&mut self, divide: bool) -> Vec<(u64, u64)> {
         let mut throw_results = vec![];
         for item in self.items.clone() {
             throw_results.push(self.get_throw_result(item, divide));
@@ -60,7 +60,7 @@ impl Monkey {
         throw_results
     }
 
-    fn get_throw_result(&self, item: usize, divide: bool) -> (usize, usize) {
+    fn get_throw_result(&self, item: u64, divide: bool) -> (u64, u64) {
         let operand = match self.operand {
             Operand::Number(val) => val,
             Operand::ItemValue => item,
@@ -69,7 +69,7 @@ impl Monkey {
         (self.get_next_monkey(item), item)
     }
 
-    fn get_next_monkey(&self, item: usize) -> usize {
+    fn get_next_monkey(&self, item: u64) -> u64 {
         if item % self.test == 0 {
             return self.result.0;
         }
@@ -91,7 +91,7 @@ where
     input.replace(replace, "").trim().parse().unwrap()
 }
 
-fn parse_input(input: &str) -> (Vec<Monkey>, usize) {
+fn parse_input(input: &str) -> (Vec<Monkey>, u64) {
     let input = input.lines().collect::<Vec<&str>>().join("|");
     let notes: Vec<Vec<&str>> = input.split("||").map(|x| x.split('|').collect()).collect();
     let mut monkeys: Vec<Monkey> = Vec::new();
@@ -99,7 +99,7 @@ fn parse_input(input: &str) -> (Vec<Monkey>, usize) {
     for note in notes {
         let mut note = note.iter().skip(1);
         let items: String = parse_after(note.next().unwrap(), "Starting items: ");
-        let items: Vec<usize> = items.split(", ").map(|x| x.parse().unwrap()).collect();
+        let items: Vec<u64> = items.split(", ").map(|x| x.parse().unwrap()).collect();
         let operation: String = parse_after(note.next().unwrap(), "Operation: new = old ");
         let mut operation = operation.split(' ');
         let operator = match operation.next().unwrap() {
@@ -107,13 +107,13 @@ fn parse_input(input: &str) -> (Vec<Monkey>, usize) {
             "+" => Operator::Add,
             _ => unimplemented!(),
         };
-        let operand = match operation.next().unwrap().parse::<usize>() {
+        let operand = match operation.next().unwrap().parse::<u64>() {
             Result::Ok(val) => Operand::Number(val),
             Result::Err(_) => Operand::ItemValue,
         };
-        let test: usize = parse_after(note.next().unwrap(), "Test: divisible by ");
-        let positive: usize = parse_after(note.next().unwrap(), "If true: throw to monkey ");
-        let negative: usize = parse_after(note.next().unwrap(), "If false: throw to monkey ");
+        let test: u64 = parse_after(note.next().unwrap(), "Test: divisible by ");
+        let positive: u64 = parse_after(note.next().unwrap(), "If true: throw to monkey ");
+        let negative: u64 = parse_after(note.next().unwrap(), "If false: throw to monkey ");
         let monkey = Monkey::new(items, operator, operand, test, (positive, negative));
         common_multiple *= test;
         monkeys.push(monkey);
@@ -122,17 +122,17 @@ fn parse_input(input: &str) -> (Vec<Monkey>, usize) {
 }
 
 fn simulate_monkeys(
-    (mut monkeys, common_multiple): (Vec<Monkey>, usize),
-    rounds: usize,
+    (mut monkeys, common_multiple): (Vec<Monkey>, u64),
+    rounds: u64,
     divide: bool,
-) -> usize {
+) -> u64 {
     let mut inspections = vec![0; monkeys.len()];
     for _ in 0..rounds {
         for i in 0..monkeys.len() {
             let monkey = monkeys.get_mut(i).unwrap();
             *inspections.get_mut(i).unwrap() += monkey.items.len();
             for (next_monkey, mut item) in monkey.throw_everything(divide) {
-                let next_monkey = monkeys.get_mut(next_monkey).unwrap();
+                let next_monkey = monkeys.get_mut(next_monkey as usize).unwrap();
                 if !divide {
                     item %= common_multiple;
                 }
@@ -141,14 +141,14 @@ fn simulate_monkeys(
         }
     }
     inspections.sort();
-    inspections.pop().unwrap() * inspections.pop().unwrap()
+    inspections.pop().unwrap() as u64 * inspections.pop().unwrap() as u64
 }
 
-fn part1(input: (Vec<Monkey>, usize)) -> usize {
+fn part1(input: (Vec<Monkey>, u64)) -> u64 {
     simulate_monkeys(input, 20, true)
 }
 
-fn part2(input: (Vec<Monkey>, usize)) -> usize {
+fn part2(input: (Vec<Monkey>, u64)) -> u64 {
     simulate_monkeys(input, 10_000, false)
 }
 
