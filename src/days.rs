@@ -17,8 +17,9 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 
-pub const MAX_DAY: usize = 11;
+pub const MAX_DAY: usize = 12;
 const BUTTON_BACKGROUND: Color = Color::rgb(0.2235, 0.2196, 0.2);
 const LABEL_BACKGROUND: Color = Color::rgb(0.0549, 0.1765, 0.2549);
 pub struct DaysPlugin;
@@ -252,6 +253,7 @@ fn day_show_setup(
         9 => day09::solve(input),
         10 => day10::solve(input),
         11 => day11::solve(input),
+        12 => day12::solve(input),
         _ => unimplemented!(),
     };
 
