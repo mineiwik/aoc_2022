@@ -125,6 +125,7 @@ dependencies = [
  "bevy_egui",
  "indoc",
  "js-sys",
+ "regex",
  "wasm-bindgen",
  "web-sys",
 ]
