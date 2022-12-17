@@ -92,7 +92,7 @@ fn menu_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                 DayAction(i + 1),
                             ))
                             .with_children(|parent| {
-                                let image_name = if i < MAX_DAY {
+                                let image_name = if i < MAX_DAY && i != 15 {
                                     "img/star.png"
                                 } else {
                                     "img/snowflake.png"
@@ -144,7 +144,7 @@ fn menu_action(
     mut day_select_state: ResMut<State<DaySelectState>>,
 ) {
     for (interaction, mut color, day_action) in &mut interaction_query {
-        if *interaction == Interaction::Clicked {
+        if *interaction == Interaction::Clicked && day_action.0 != 16 {
             if let 1..=MAX_DAY = day_action.0 {
                 game_state.set(GameState::Day).unwrap();
                 day_select_state.set(DaySelectState(day_action.0)).ok();
