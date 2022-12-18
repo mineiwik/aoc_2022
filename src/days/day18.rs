@@ -179,10 +179,9 @@ fn bfs(
     accessable: &mut HashSet<Position>,
 ) {
     accessable.insert(*current);
-    let my_adja = adjacencies.get(current).unwrap();
-    for adja in my_adja {
-        if adja != current && !accessable.contains(adja) {
-            bfs(adja, adjacencies, accessable);
+    for adjacency in adjacencies.get(current).unwrap() {
+        if !accessable.contains(adjacency) {
+            bfs(adjacency, adjacencies, accessable);
         }
     }
 }
