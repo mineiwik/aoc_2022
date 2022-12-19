@@ -25,7 +25,7 @@ impl std::str::FromStr for Tunnel {
                 .as_str()
                 .to_owned();
             let node = line.parse()?;
-            let node = nodes.insert(valve, node);
+            nodes.insert(valve, node);
         }
         Ok(Self { nodes })
     }
@@ -74,6 +74,7 @@ fn parse_input(input: &str) -> Tunnel {
     input.parse().unwrap()
 }
 
+#[allow(clippy::type_complexity)]
 fn most_pressure(
     current: &String,
     open_current: bool,
@@ -159,7 +160,7 @@ fn part2(tunnel: Tunnel) -> isize {
 
     for (k1, v1) in &dp {
         for (k2, v2) in &dp {
-            if k1.1.len() == 0 || k2.1.len() == 0 {
+            if k1.1.is_empty() || k2.1.is_empty() {
                 continue;
             }
 
@@ -169,10 +170,8 @@ fn part2(tunnel: Tunnel) -> isize {
 
             let h1: HashSet<_> = k1.1.iter().collect();
             let h2: HashSet<_> = k2.1.iter().collect();
-            if h1.is_disjoint(&h2) {
-                if v1.1 + v2.1 > sum {
-                    sum = v1.1 + v2.1;
-                }
+            if h1.is_disjoint(&h2) && v1.1 + v2.1 > sum {
+                sum = v1.1 + v2.1;
             }
         }
     }
