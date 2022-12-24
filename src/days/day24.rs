@@ -132,17 +132,16 @@ fn min_time(valley: &mut Valley, start: &Position, goal: &Position) -> isize {
         for pos in &player_positions {
             'inner: for dir in DIRECTIONS {
                 let new_pos = pos.add(&dir);
-                if new_pos.x < 0
+                if (new_pos.x < 0
                     || new_pos.x >= valley.max_x
                     || new_pos.y < 0
-                    || new_pos.y >= valley.max_y
+                    || new_pos.y >= valley.max_y)
+                    && new_pos != Position::new(0, -1)
+                    && new_pos != Position::new(valley.max_x - 1, valley.max_y)
                 {
-                    if new_pos != Position::new(0, -1)
-                        && new_pos != Position::new(valley.max_x - 1, valley.max_y)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
+
                 for blizzard in &valley.blizzards {
                     if new_pos == blizzard.0 {
                         continue 'inner;

@@ -277,13 +277,13 @@ impl Direction {
         Direction::Up,
     ];
     fn rotate(&mut self, rot: Rotation) -> Self {
-        let val = *self as usize;
+        let val = *self as isize;
         match rot {
             Rotation::CW => {
-                *self = num::FromPrimitive::from_usize((val + 1).rem_euclid(4)).unwrap()
+                *self = num::FromPrimitive::from_usize((val + 1).rem_euclid(4) as usize).unwrap()
             }
             Rotation::CCW => {
-                *self = num::FromPrimitive::from_usize((val - 1).rem_euclid(4)).unwrap()
+                *self = num::FromPrimitive::from_usize((val - 1).rem_euclid(4) as usize).unwrap()
             }
         }
         *self

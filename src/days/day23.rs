@@ -113,7 +113,7 @@ fn simulate_round(map: &mut HashSet<Position>, i: isize) -> bool {
         }
     }
 
-    if propositions.len() == 0 {
+    if propositions.is_empty() {
         return true;
     }
 
